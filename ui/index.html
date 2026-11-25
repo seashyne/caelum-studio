@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
-  <title>Caelum Studio — Local AI Runtime &amp; Model Workbench</title>
+  <meta name="color-scheme" content="dark light">
+  <title>Caelum Studio — Local AI Workbench</title>
   <link rel="stylesheet" href="./styles/theme.css">
   <link rel="stylesheet" href="./styles/studio.css">
   <script src="./js/markdown.js" defer></script>
@@ -13,116 +13,305 @@
 <body>
   <div class="studio-shell">
     <!-- Left Navigation Rail -->
-    <nav class="nav-rail" aria-label="Caelum Studio sections">
+    <nav class="nav-rail" aria-label="Caelum Studio navigation">
       <div class="rail-brand">
-        <div class="rail-logo">✦</div>
-        <div>
-          <div class="rail-title">Caelum Studio</div>
-          <div class="rail-sub">Pure Rust Runtime UI</div>
+        <div class="rail-logo" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3z"/>
+          </svg>
+        </div>
+        <div class="rail-brand-text">
+          <div class="rail-title-row">
+            <span class="rail-title">Caelum Studio</span>
+            <span class="rail-ver">0.2</span>
+          </div>
+          <div class="rail-sub">Local Rust Runtime</div>
         </div>
       </div>
 
+      <div class="rail-section-label">Workbench</div>
       <div role="tablist" aria-orientation="vertical" aria-label="Workspace views" class="rail-tabs">
         <button type="button" role="tab" id="tab-chat" class="rail-tab" aria-selected="true" focusgroupstart>
-          <span>💬</span><span>Chat</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="rail-tab-label">Chat</span>
         </button>
+
         <button type="button" role="tab" id="tab-discover" class="rail-tab" aria-selected="false">
-          <span>🔍</span><span>Discover Hub</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <span class="rail-tab-label">Discover</span>
         </button>
+
         <button type="button" role="tab" id="tab-models" class="rail-tab" aria-selected="false">
-          <span>📦</span><span>My Models</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+            <path d="m3.3 7 8.7 5 8.7-5"/>
+            <path d="M12 22V12"/>
+          </svg>
+          <span class="rail-tab-label">My Models</span>
+          <span class="rail-count tabular" id="rail-model-count">0</span>
         </button>
+
         <button type="button" role="tab" id="tab-server" class="rail-tab" aria-selected="false">
-          <span>⚡</span><span>Server &amp; Logs</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="4 17 10 11 4 5"/>
+            <line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          <span class="rail-tab-label">Server &amp; Logs</span>
+          <span class="rail-dot" id="rail-server-dot" aria-hidden="true"></span>
         </button>
       </div>
 
       <div class="rail-footer">
-        <button type="button" class="btn" id="theme-btn">🌙 Dark Mode</button>
+        <div class="rail-shortcut-hint">
+          <span>Model switcher</span>
+          <kbd>Ctrl K</kbd>
+        </div>
+        <button type="button" class="btn btn-ghost" id="theme-btn" style="width:100%;justify-content:flex-start;">
+          <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+          <span id="theme-label">Light mode</span>
+        </button>
       </div>
     </nav>
 
     <!-- Main Workspace Column -->
     <div class="workspace-col">
-      <!-- Top Model Loader Bar (LM Studio style) -->
+      <!-- Compact Single-Row Top Bar -->
       <header class="model-bar">
         <div class="model-bar-left">
-          <select id="top-model-select" class="model-select" aria-label="Select local GGUF model"></select>
-          <button type="button" class="btn btn-primary" id="top-load-btn">⚡ Load Model</button>
-          <button type="button" class="btn" id="top-eject-btn" disabled>⏏ Eject</button>
+          <div class="select-wrap">
+            <svg class="select-icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="2"/>
+              <rect x="9" y="9" width="6" height="6"/>
+              <path d="M15 2v2M9 2v2M15 20v2M9 20v2M2 15h2M2 9h2M20 15h2M20 9h2"/>
+            </svg>
+            <select id="top-model-select" class="model-select" aria-label="Select local GGUF model"></select>
+            <svg class="select-icon-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </div>
+          <button type="button" class="btn btn-primary" id="top-load-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="6 3 20 12 6 21 6 3"/>
+            </svg>
+            <span>Load</span>
+          </button>
+          <button type="button" class="btn" id="top-eject-btn" disabled title="Unload current model">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="6" y="6" width="12" height="12" rx="1"/>
+            </svg>
+            <span>Eject</span>
+          </button>
         </div>
-        <div class="status-chip">
-          <span class="dot" id="top-status-dot"></span>
-          <span id="top-status-text">No model loaded</span>
+
+        <div class="model-bar-right">
+          <div class="status-chip" id="top-status-chip" role="status" aria-live="polite">
+            <span class="dot" id="top-status-dot" aria-hidden="true"></span>
+            <span id="top-status-text">No model loaded</span>
+          </div>
+          <button type="button" class="btn btn-ghost btn-icon" id="inspector-toggle-btn" aria-pressed="false" aria-controls="chat-inspector" title="Toggle Parameters (Ctrl+I)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="21" y1="4" x2="14" y2="4"/>
+              <line x1="10" y1="4" x2="3" y2="4"/>
+              <line x1="21" y1="12" x2="12" y2="12"/>
+              <line x1="8" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="20" x2="16" y2="20"/>
+              <line x1="12" y1="20" x2="3" y2="20"/>
+              <line x1="14" y1="2" x2="14" y2="6"/>
+              <line x1="8" y1="10" x2="8" y2="14"/>
+              <line x1="16" y1="18" x2="16" y2="22"/>
+            </svg>
+            <span class="sr-only">Toggle inference parameters</span>
+          </button>
         </div>
       </header>
 
       <div class="panels-stage">
-        <!-- TAB 1: CHAT -->
+        <!-- ==================== TAB 1: CHAT ==================== -->
         <section role="tabpanel" id="panel-chat" aria-labelledby="tab-chat" class="studio-panel">
           <div class="chat-layout">
             <div class="chat-main">
-              <div class="messages-scroll" id="chat-messages">
+              <div class="messages-scroll scroller" id="chat-messages">
                 <div class="empty-chat" id="chat-empty">
-                  <h2>พร้อมรันบน Caelum Runtime แล้ว</h2>
-                  <p>เลือกไฟล์โมเดล GGUF ด้านบนแล้วกด <strong>Load Model</strong> เพื่อประมวลผลบน Intel Arc B580 (Vulkan Turbo) หรือ CPU AVX-VNNI แบบ 100% ออฟไลน์</p>
+                  <div class="empty-mark" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3z"/>
+                    </svg>
+                  </div>
+                  <h2>Caelum Local Workbench</h2>
+                  <p id="empty-subtitle">เลือกโมเดล GGUF ด้านบนแล้วกด <strong>Load</strong> เพื่อรันบน Intel Arc B580 หรือ CPU แบบออฟไลน์ 100%</p>
+
+                  <div class="starter-grid">
+                    <button type="button" class="starter-chip" data-prompt="ช่วยอธิบายสถาปัตยกรรม KV-Cache และวิธีทำให้การ infer โมเดล GGUF บน GPU เร็วขึ้นแบบกระชับ">
+                      <strong>KV-Cache &amp; GPU Speed</strong>
+                      <span>สรุปหลักการเพิ่มความเร็ว inference</span>
+                    </button>
+                    <button type="button" class="starter-chip" data-prompt="เขียนฟังก์ชัน Rust สำหรับอ่านไฟล์ JSONL แบบ streaming พร้อม unit test 2 เคส">
+                      <strong>Rust Streaming Code</strong>
+                      <span>สร้างฟังก์ชันอ่าน JSONL + unit test</span>
+                    </button>
+                    <button type="button" class="starter-chip" data-prompt="เปรียบเทียบข้อดีข้อเสียระหว่าง Q4_K_M, Q6_K และ Q8_0 ในตาราง Markdown">
+                      <strong>Quantization Guide</strong>
+                      <span>เทียบ Q4_K_M / Q6_K / Q8_0 เป็นตาราง</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <div class="composer-wrap">
-                <div class="composer-box">
-                  <textarea id="chat-prompt" rows="2" placeholder="พิมพ์ข้อความถึงโมเดล… (Enter ส่ง, Shift+Enter ขึ้นบรรทัดใหม่)"></textarea>
-                  <button type="button" class="btn btn-primary" id="chat-send-btn">ส่ง ↑</button>
-                  <button type="button" class="btn btn-danger" id="chat-stop-btn" hidden>หยุด ■</button>
+                <div class="composer-card">
+                  <textarea id="chat-prompt" rows="1" placeholder="พิมพ์ข้อความถึงโมเดล…"></textarea>
+                  <div class="composer-bar">
+                    <div class="composer-meta">
+                      <button type="button" class="param-pill tabular" id="composer-param-pill" title="Open Inference Parameters (Ctrl+I)">
+                        <span id="pill-params-text">temp 0.7 · 1024 tok</span>
+                      </button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="chat-clear-inline-btn" title="Clear conversation (Ctrl+Shift+L)">
+                        <span>Clear</span>
+                      </button>
+                      <span class="composer-hint">Enter ส่ง · Shift+Enter ขึ้นบรรทัดใหม่</span>
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-primary send-circle" id="chat-send-btn" aria-label="Send message">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M12 19V5"/>
+                          <path d="m5 12 7-7 7 7"/>
+                        </svg>
+                      </button>
+                      <button type="button" class="btn btn-danger send-circle" id="chat-stop-btn" hidden aria-label="Stop generation">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <rect x="7" y="7" width="10" height="10" rx="1.5"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <aside class="chat-inspector">
-              <div class="inspector-title">Inference Parameters</div>
-              <div class="field">
-                <label for="cfg-temp"><span>Temperature</span><span id="cfg-temp-val">0.7</span></label>
-                <input id="cfg-temp" type="range" min="0" max="1.5" step="0.05" value="0.7">
+            <!-- Collapsible Right Parameters Inspector -->
+            <aside class="chat-inspector scroller" id="chat-inspector" hidden aria-label="Inference parameters">
+              <div class="inspector-head">
+                <span class="inspector-title">Inference Parameters</span>
+                <button type="button" class="btn btn-ghost btn-icon btn-sm" id="inspector-close-btn" aria-label="Close parameters">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12"/>
+                  </svg>
+                </button>
               </div>
+
+              <div class="field">
+                <label for="cfg-temp">
+                  <span>Temperature</span>
+                  <span class="field-val tabular" id="cfg-temp-val">0.70</span>
+                </label>
+                <input id="cfg-temp" type="range" min="0" max="1.5" step="0.05" value="0.7">
+                <div class="preset-row">
+                  <button type="button" class="chip-btn" data-temp="0.2">Precise 0.2</button>
+                  <button type="button" class="chip-btn" data-temp="0.7">Balanced 0.7</button>
+                  <button type="button" class="chip-btn" data-temp="1.1">Creative 1.1</button>
+                </div>
+              </div>
+
               <div class="field">
                 <label for="cfg-max-tokens"><span>Max Tokens</span></label>
-                <input id="cfg-max-tokens" type="number" min="32" max="8192" step="64" value="1024">
+                <input id="cfg-max-tokens" type="number" min="32" max="16384" step="64" value="1024">
+                <div class="preset-row">
+                  <button type="button" class="chip-btn" data-maxtok="512">512</button>
+                  <button type="button" class="chip-btn" data-maxtok="1024">1024</button>
+                  <button type="button" class="chip-btn" data-maxtok="2048">2048</button>
+                  <button type="button" class="chip-btn" data-maxtok="4096">4096</button>
+                </div>
               </div>
+
               <div class="field">
                 <label for="cfg-system"><span>System Prompt</span></label>
-                <textarea id="cfg-system" rows="5">You are a helpful, accurate AI assistant running locally on Caelum Runtime.</textarea>
+                <textarea id="cfg-system" rows="6">You are a helpful, accurate AI assistant running locally on Caelum Runtime.</textarea>
               </div>
-              <button type="button" class="btn" id="chat-clear-btn">🗑 ล้างหน้าแชท</button>
+
+              <button type="button" class="btn" id="chat-clear-btn" style="width:100%;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
+                <span>Clear conversation</span>
+              </button>
             </aside>
           </div>
         </section>
 
-        <!-- TAB 2: DISCOVER HUGGING FACE -->
+        <!-- ==================== TAB 2: DISCOVER HUB ==================== -->
         <section role="tabpanel" id="panel-discover" aria-labelledby="tab-discover" class="studio-panel" hidden>
-          <div class="page-scroll">
+          <div class="page-scroll scroller">
             <div class="page-inner">
-              <div class="section-card">
-                <div class="section-head">
-                  <h2>🔍 ค้นหาและดาวน์โหลดโมเดล GGUF จาก Hugging Face</h2>
+              <div class="page-header">
+                <div>
+                  <h1>Discover Models</h1>
+                  <p>ค้นหาและดาวน์โหลดไฟล์ GGUF จาก Hugging Face ลงใน <code>~/.caelum/models</code> แบบ resume ได้</p>
                 </div>
+              </div>
+
+              <div class="panel-card">
                 <div class="row">
-                  <input type="search" id="hf-query-input" class="input-ctl grow" placeholder="ค้นหา เช่น qwen2.5-coder, llama-3.1, gemma-3, phi-4, deepseek…" value="qwen2.5-coder">
-                  <button type="button" class="btn btn-primary" id="hf-search-btn">ค้นหา GGUF</button>
+                  <div class="search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input type="search" id="hf-query-input" class="input-ctl" placeholder="ค้นหาโมเดล GGUF เช่น qwen2.5-coder, llama-3.1, deepseek…" value="qwen2.5-coder">
+                  </div>
+                  <button type="button" class="btn btn-primary" id="hf-search-btn">Search Hub</button>
                 </div>
 
-                <div id="dl-banner" hidden>
-                  <div id="dl-text" style="font-size:0.84rem;font-weight:650;margin-bottom:0.35rem;"></div>
-                  <div class="progress-bar"><div class="progress-fill" id="dl-fill" style="width:0%"></div></div>
+                <div class="preset-row" aria-label="Popular searches">
+                  <button type="button" class="chip-btn" data-hf-q="qwen2.5-coder">Qwen2.5-Coder</button>
+                  <button type="button" class="chip-btn" data-hf-q="llama-3.1-8b">Llama 3.1 8B</button>
+                  <button type="button" class="chip-btn" data-hf-q="llama-3.2-3b">Llama 3.2 3B</button>
+                  <button type="button" class="chip-btn" data-hf-q="deepseek-r1">DeepSeek R1</button>
+                  <button type="button" class="chip-btn" data-hf-q="gemma-2">Gemma 2</button>
+                  <button type="button" class="chip-btn" data-hf-q="mistral-7b">Mistral 7B</button>
+                </div>
+
+                <div class="dl-banner" id="dl-banner" hidden>
+                  <div class="dl-head">
+                    <span id="dl-text">Downloading…</span>
+                    <span class="tabular" id="dl-pct">0%</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="dl-fill" style="width:0%"></div>
+                  </div>
                 </div>
 
                 <div class="discover-split">
-                  <div>
-                    <div class="inspector-title" style="margin-bottom:0.45rem;">Repositories</div>
-                    <div class="repo-list" id="hf-repos-list">กด "ค้นหา GGUF" เพื่อแสดงรายการโมเดลยอดนิยมจาก Hugging Face</div>
+                  <div class="pane-box">
+                    <div class="pane-head">
+                      <span>Repositories</span>
+                      <span class="tabular" id="hf-repo-count"></span>
+                    </div>
+                    <div class="repo-list scroller" id="hf-repos-list">
+                      <div class="empty-list-msg">กด <strong>Search Hub</strong> หรือเลือกแท็กด้านบนเพื่อดูโมเดล GGUF</div>
+                    </div>
                   </div>
-                  <div>
-                    <div class="inspector-title" style="margin-bottom:0.45rem;">GGUF Quantizations (~/.caelum/models)</div>
-                    <div class="file-list" id="hf-files-list">คลิก Repository ทางซ้ายเพื่อดูรายการไฟล์ .gguf</div>
+
+                  <div class="pane-box">
+                    <div class="pane-head">
+                      <span>GGUF Quantizations</span>
+                      <span class="tabular" id="hf-file-count"></span>
+                    </div>
+                    <div class="file-list scroller" id="hf-files-list">
+                      <div class="empty-list-msg">เลือก Repository ทางซ้ายเพื่อดูไฟล์และขนาด VRAM</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -130,72 +319,130 @@
           </div>
         </section>
 
-        <!-- TAB 3: MY MODELS -->
+        <!-- ==================== TAB 3: MY MODELS ==================== -->
         <section role="tabpanel" id="panel-models" aria-labelledby="tab-models" class="studio-panel" hidden>
-          <div class="page-scroll">
+          <div class="page-scroll scroller">
             <div class="page-inner">
-              <div class="section-card">
-                <div class="section-head">
-                  <h2>📦 โมเดล GGUF ในเครื่องทั้งหมด (Caelum + Cetia + LM Studio)</h2>
-                  <button type="button" class="btn" id="rescan-btn">🔄 Rescan</button>
+              <div class="page-header">
+                <div>
+                  <h1>My Models</h1>
+                  <p>สแกนอัตโนมัติจาก Caelum, Cetia และ LM Studio เพื่อโหลดใช้งานร่วมกันได้ทันที</p>
                 </div>
                 <div class="row">
-                  <input type="search" id="model-filter-input" class="input-ctl grow" placeholder="กรองชื่อโมเดล…">
-                  <input type="text" id="extra-dir-input" class="input-ctl grow" placeholder="เพิ่มโฟลเดอร์ GGUF อื่นๆ เช่น /path/to/models">
-                  <button type="button" class="btn" id="add-dir-btn">+ เพิ่มโฟลเดอร์</button>
+                  <button type="button" class="btn" id="rescan-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                      <path d="M3 3v5h5"/>
+                      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                      <path d="M16 16h5v5"/>
+                    </svg>
+                    <span>Rescan</span>
+                  </button>
                 </div>
-                <div class="model-grid" id="models-grid"></div>
               </div>
+
+              <div class="panel-card">
+                <div class="row">
+                  <div class="search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input type="search" id="model-filter-input" class="input-ctl" placeholder="กรองตามชื่อไฟล์หรือโฟลเดอร์…">
+                  </div>
+                  <div class="preset-row" id="source-filters" role="group" aria-label="Filter by source">
+                    <button type="button" class="chip-btn active" data-src="all">All</button>
+                    <button type="button" class="chip-btn" data-src="Caelum">Caelum</button>
+                    <button type="button" class="chip-btn" data-src="Cetia">Cetia</button>
+                    <button type="button" class="chip-btn" data-src="LM Studio">LM Studio</button>
+                  </div>
+                </div>
+
+                <details class="extra-dir-disclosure">
+                  <summary style="font-size:12px;color:var(--muted);cursor:pointer;user-select:none;">+ เพิ่มโฟลเดอร์เก็บไฟล์ GGUF เพิ่มเติม</summary>
+                  <div class="row" style="margin-top:10px;">
+                    <input type="text" id="extra-dir-input" class="input-ctl grow" placeholder="/path/to/custom/gguf/models">
+                    <button type="button" class="btn" id="add-dir-btn">Add Folder</button>
+                  </div>
+                </details>
+              </div>
+
+              <div class="model-list" id="models-grid"></div>
             </div>
           </div>
         </section>
 
-        <!-- TAB 4: DEVELOPER SERVER & LOGS -->
+        <!-- ==================== TAB 4: SERVER & LOGS ==================== -->
         <section role="tabpanel" id="panel-server" aria-labelledby="tab-server" class="studio-panel" hidden>
-          <div class="page-scroll">
+          <div class="page-scroll scroller">
             <div class="page-inner">
-              <div class="section-card">
-                <div class="section-head">
-                  <h2>⚡ Local API Server (OpenAI-Compatible + Tool Calling)</h2>
-                  <div class="row">
-                    <button type="button" class="btn btn-primary" id="srv-start-btn">▶ Start Server</button>
-                    <button type="button" class="btn btn-danger" id="srv-stop-btn">■ Stop</button>
-                  </div>
+              <div class="page-header">
+                <div>
+                  <h1>Local API Server</h1>
+                  <p>OpenAI-compatible endpoint + Tool Calling สำหรับเชื่อมต่อ <code>mybot-cli</code>, <code>My Bot AI</code> และ Cline</p>
                 </div>
-
                 <div class="row">
+                  <button type="button" class="btn btn-sm" id="copy-endpoint-btn" title="Copy API base URL">
+                    <span class="tabular" id="endpoint-url-label">http://127.0.0.1:8000/v1</span>
+                  </button>
+                  <button type="button" class="btn btn-primary" id="srv-start-btn">Start Server</button>
+                  <button type="button" class="btn btn-danger" id="srv-stop-btn">Stop</button>
+                </div>
+              </div>
+
+              <div class="panel-card">
+                <div class="section-head">
+                  <h2>Runtime Configuration</h2>
+                </div>
+                <div class="server-grid">
                   <div class="field">
                     <label for="srv-host">Host</label>
-                    <input type="text" id="srv-host" value="127.0.0.1" style="width:130px">
+                    <input type="text" id="srv-host" value="127.0.0.1">
                   </div>
                   <div class="field">
                     <label for="srv-port">Port (8000 / 1234)</label>
-                    <input type="number" id="srv-port" value="8000" min="1024" max="65535" style="width:120px">
+                    <input type="number" id="srv-port" value="8000" min="1024" max="65535" class="tabular">
                   </div>
                   <div class="field">
                     <label for="srv-ctx">Context Length</label>
-                    <input type="number" id="srv-ctx" value="4096" min="512" max="131072" step="512" style="width:120px">
+                    <input type="number" id="srv-ctx" value="4096" min="512" max="131072" step="512" class="tabular">
                   </div>
-                  <label style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.86rem;font-weight:650;margin-top:1.1rem;">
-                    <input type="checkbox" id="srv-gpu" checked> GPU Turbo (Vulkan / Arc B580)
+                </div>
+                <div class="toggle-row">
+                  <label class="check-label">
+                    <input type="checkbox" id="srv-gpu" checked>
+                    <span>GPU Turbo (Vulkan / Arc B580)</span>
                   </label>
-                  <label style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.86rem;font-weight:650;margin-top:1.1rem;">
-                    <input type="checkbox" id="srv-kvq8"> CPU KV-Q8 (ลด RAM 4×)
+                  <label class="check-label">
+                    <input type="checkbox" id="srv-kvq8">
+                    <span>CPU KV-Q8 (ประหยัด RAM 4×)</span>
                   </label>
                 </div>
+              </div>
 
-                <div class="code-card">
-                  <div class="code-card-head"><span>Quick Connect (mybot-cli · My Bot AI · cURL)</span></div>
+              <div class="panel-card">
+                <div class="section-head">
+                  <h2>Quick Connect</h2>
+                  <div class="row">
+                    <div class="snippet-tabs" role="group" aria-label="Client snippet">
+                      <button type="button" class="snippet-tab active" data-snippet="mybot-cli">mybot-cli</button>
+                      <button type="button" class="snippet-tab" data-snippet="my-bot-ai">My Bot AI</button>
+                      <button type="button" class="snippet-tab" data-snippet="curl">cURL</button>
+                    </div>
+                    <button type="button" class="btn btn-sm" id="copy-snippet-btn">Copy</button>
+                  </div>
+                </div>
+                <div class="code-card" style="margin:0;">
                   <pre id="connect-snippet"></pre>
                 </div>
               </div>
 
-              <div class="section-card">
+              <div class="panel-card">
                 <div class="section-head">
-                  <h2>📜 Live Runtime Logs</h2>
-                  <button type="button" class="btn" id="logs-clear-btn">Clear</button>
+                  <h2>Live Runtime Logs</h2>
+                  <button type="button" class="btn btn-sm" id="logs-clear-btn">Clear Logs</button>
                 </div>
-                <div class="logs-box" id="logs-box"></div>
+                <div class="logs-box scroller" id="logs-box"></div>
               </div>
             </div>
           </div>
@@ -206,17 +453,39 @@
 
   <!-- Bottom Hardware Telemetry Bar -->
   <footer class="hw-footer">
-    <span id="hw-gpu">Detecting Caelum Runtime &amp; GPU…</span>
-    <span id="hw-ram">RAM: —</span>
+    <div class="hw-footer-group">
+      <span id="hw-gpu">Detecting Caelum Runtime…</span>
+    </div>
+    <div class="hw-footer-group">
+      <span id="hw-ram" class="tabular">RAM: —</span>
+    </div>
   </footer>
 
-  <!-- Native <dialog> for Model Inspection -->
-  <dialog id="inspect-dialog" aria-labelledby="inspect-title">
+  <!-- Non-blocking Toast Stack -->
+  <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Native <dialog> for Model Inspection (light-dismiss + top-layer animation) -->
+  <dialog id="inspect-dialog" class="studio-dialog" closedby="any" aria-labelledby="inspect-title">
     <div class="section-head">
       <h2 id="inspect-title">Model Inspector</h2>
-      <button type="button" class="btn" id="inspect-close-btn">✕ Close</button>
+      <div class="row">
+        <button type="button" class="btn btn-sm" id="inspect-copy-btn">Copy</button>
+        <button type="button" class="btn btn-sm" id="inspect-close-btn">Close</button>
+      </div>
     </div>
-    <pre id="inspect-pre"></pre>
+    <pre id="inspect-pre" class="scroller"></pre>
+  </dialog>
+
+  <!-- Native <dialog> for Explicit Destructive Delete Confirmation -->
+  <dialog id="confirm-dialog" class="studio-dialog dialog-sm" closedby="any" aria-labelledby="confirm-title">
+    <div class="section-head">
+      <h2 id="confirm-title">ยืนยันการลบไฟล์โมเดล</h2>
+    </div>
+    <p class="dialog-copy" id="confirm-desc"></p>
+    <div class="dialog-actions">
+      <button type="button" class="btn" id="confirm-cancel-btn">ยกเลิก</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok-btn">ลบไฟล์ถาวร</button>
+    </div>
   </dialog>
 </body>
 </html>

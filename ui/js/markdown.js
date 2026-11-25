@@ -4,6 +4,7 @@ window.CaelumMarkdown = (() => {
     const t = line.trim();
     return t.includes("|") && t.includes("-") && /^\|?(\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?$/.test(t);
   }
+
   function splitRow(line) {
     return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
   }
@@ -43,9 +44,10 @@ window.CaelumMarkdown = (() => {
       const trimmed = line.trim();
       if (!trimmed) { i++; continue; }
 
+      // Fenced code blocks
       const fence = /^```([a-zA-Z0-9_+-]*)\s*$/.exec(trimmed);
       if (fence) {
-        const lang = fence[1] || "code";
+        const lang = fence[1] || "text";
         const buf = [];
         i++;
         while (i < lines.length && !/^```\s*$/.test(lines[i].trim())) {
@@ -62,18 +64,19 @@ window.CaelumMarkdown = (() => {
         span.textContent = lang;
         const copyBtn = document.createElement("button");
         copyBtn.type = "button";
-        copyBtn.className = "btn";
-        copyBtn.style.padding = "0.15rem 0.5rem";
-        copyBtn.style.fontSize = "0.7rem";
+        copyBtn.className = "btn btn-ghost btn-sm";
+        copyBtn.style.height = "22px";
+        copyBtn.style.fontSize = "11px";
         copyBtn.textContent = "Copy";
         copyBtn.addEventListener("click", () => {
           navigator.clipboard.writeText(codeText).then(() => {
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => { copyBtn.textContent = "Copy"; }, 1500);
+            copyBtn.textContent = "Copied";
+            setTimeout(() => { copyBtn.textContent = "Copy"; }, 1400);
           });
         });
         head.append(span, copyBtn);
         const pre = document.createElement("pre");
+        pre.className = "scroller";
         const code = document.createElement("code");
         code.textContent = codeText;
         pre.appendChild(code);
@@ -82,6 +85,31 @@ window.CaelumMarkdown = (() => {
         continue;
       }
 
+      // Headings
+      const heading = /^(#{1,3})\s+(.+)$/.exec(trimmed);
+      if (heading) {
+        const tag = `h${heading[1].length}`;
+        const el = document.createElement(tag);
+        appendInline(el, heading[2]);
+        container.appendChild(el);
+        i++;
+        continue;
+      }
+
+      // Blockquotes
+      if (/^>\s?/.test(trimmed)) {
+        const bq = document.createElement("blockquote");
+        const qLines = [];
+        while (i < lines.length && /^>\s?/.test(lines[i].trim())) {
+          qLines.push(lines[i].trim().replace(/^>\s?/, ""));
+          i++;
+        }
+        appendInline(bq, qLines.join(" "));
+        container.appendChild(bq);
+        continue;
+      }
+
+      // GFM Tables
       if (trimmed.includes("|") && i + 1 < lines.length && isTableSep(lines[i + 1])) {
         const headers = splitRow(line);
         i += 2;
@@ -91,7 +119,7 @@ window.CaelumMarkdown = (() => {
           i++;
         }
         const wrap = document.createElement("div");
-        wrap.className = "md-table-wrap";
+        wrap.className = "md-table-wrap scroller";
         wrap.tabIndex = 0;
         wrap.setAttribute("role", "region");
         wrap.setAttribute("aria-label", "Data table");
@@ -121,6 +149,7 @@ window.CaelumMarkdown = (() => {
         continue;
       }
 
+      // Unordered lists
       if (/^[-*+]\s+/.test(trimmed)) {
         const ul = document.createElement("ul");
         while (i < lines.length && /^[-*+]\s+/.test(lines[i].trim())) {
@@ -130,6 +159,19 @@ window.CaelumMarkdown = (() => {
           i++;
         }
         container.appendChild(ul);
+        continue;
+      }
+
+      // Ordered lists
+      if (/^\d+\.\s+/.test(trimmed)) {
+        const ol = document.createElement("ol");
+        while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+          const li = document.createElement("li");
+          appendInline(li, lines[i].trim().replace(/^\d+\.\s+/, ""));
+          ol.appendChild(li);
+          i++;
+        }
+        container.appendChild(ol);
         continue;
       }
 

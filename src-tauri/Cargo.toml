@@ -1,6 +1,6 @@
 [package]
 name = "caelum-studio"
-version = "0.1.0"
+version = "0.2.0"
 description = "Caelum Studio — Native Tauri 2 Desktop App & Model Manager for the Caelum Pure-Rust LLM Runtime"
 authors = ["seashyne"]
 edition = "2021"

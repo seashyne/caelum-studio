@@ -1,93 +1,271 @@
-/* Caelum Studio — Design Tokens (Modern Web Guidance) */
+/* Caelum Studio — Monochrome Workbench Design System
+   Near-monochrome palette, three surface levels, hairline borders,
+   one semantic colour per state, Thai-safe vertical rhythm. */
 :root {
-  --bg-light: #f4f6fb;
-  --bg-dark: #0a0e17;
-  --surface-light: #ffffff;
-  --surface-dark: #111726;
-  --surface-2-light: #eef2f7;
-  --surface-2-dark: #192235;
-  --border-light: #dce3ee;
-  --border-dark: #253147;
+  /* Dark palette (default workbench) */
+  --canvas-dark: #060608;
+  --rail-dark: #09090b;
+  --surface-dark: #0e0e11;
+  --surface-raised-dark: #141418;
+  --surface-active-dark: #1b1b20;
+  --line-soft-dark: #1a1a1e;
+  --line-dark: #232329;
+  --line-strong-dark: #34343f;
 
-  --text-light: #0f172a;
-  --text-dark: #f1f5f9;
-  --muted-light: #64748b;
-  --muted-dark: #94a3b8;
+  --text-dark: #f5f5f7;
+  --text-secondary-dark: #b6b6bf;
+  --muted-dark: #8b8b95;
+  --faint-dark: #63636c;
 
-  --brand-light: #2563eb;
-  --brand-dark: #38bdf8;
-  --ok-light: #059669;
-  --ok-dark: #34d399;
-  --warn-light: #d97706;
-  --warn-dark: #fbbf24;
-  --danger-light: #dc2626;
-  --danger-dark: #f87171;
-  --code-bg-light: #0f172a;
-  --code-bg-dark: #060911;
+  --action-dark: #f4f4f5;
+  --action-hover-dark: #ffffff;
+  --action-text-dark: #09090b;
 
-  color-scheme: light dark;
-  --bg: light-dark(var(--bg-light), var(--bg-dark));
+  --ok-dark: #71d59b;
+  --ok-bg-dark: rgba(113, 213, 155, 0.10);
+  --ok-line-dark: rgba(113, 213, 155, 0.26);
+
+  --warn-dark: #f0c274;
+  --warn-bg-dark: rgba(240, 194, 116, 0.10);
+  --warn-line-dark: rgba(240, 194, 116, 0.26);
+
+  --danger-dark: #ff8f8f;
+  --danger-bg-dark: rgba(255, 143, 143, 0.10);
+  --danger-line-dark: rgba(255, 143, 143, 0.28);
+
+  --code-bg-dark: #09090b;
+  --code-head-dark: #111115;
+  --code-text-dark: #e6e6eb;
+  --code-inline-dark: #e9dfc0;
+  --scrollbar-thumb-dark: #4b4b57;
+
+  /* Light palette (warm alabaster monochrome) */
+  --canvas-light: #f6f6f8;
+  --rail-light: #efeff2;
+  --surface-light: #fcfcfd;
+  --surface-raised-light: #f2f2f5;
+  --surface-active-light: #e7e7ec;
+  --line-soft-light: #e8e8ee;
+  --line-light: #dcdce3;
+  --line-strong-light: #b4b4c0;
+
+  --text-light: #111114;
+  --text-secondary-light: #42424b;
+  --muted-light: #686873;
+  --faint-light: #8d8d98;
+
+  --action-light: #141418;
+  --action-hover-light: #24242b;
+  --action-text-light: #f7f7f8;
+
+  --ok-light: #15803d;
+  --ok-bg-light: rgba(21, 128, 61, 0.08);
+  --ok-line-light: rgba(21, 128, 61, 0.24);
+
+  --warn-light: #b45309;
+  --warn-bg-light: rgba(180, 83, 9, 0.08);
+  --warn-line-light: rgba(180, 83, 9, 0.24);
+
+  --danger-light: #b91c1c;
+  --danger-bg-light: rgba(185, 28, 28, 0.08);
+  --danger-line-light: rgba(185, 28, 28, 0.26);
+
+  --code-bg-light: #111115;
+  --code-head-light: #18181e;
+  --code-text-light: #ececf1;
+  --code-inline-light: #2d2d35;
+  --scrollbar-thumb-light: #7c7c89;
+
+  /* Semantic tokens resolved via color-scheme */
+  color-scheme: dark light;
+  --canvas: light-dark(var(--canvas-light), var(--canvas-dark));
+  --rail: light-dark(var(--rail-light), var(--rail-dark));
   --surface: light-dark(var(--surface-light), var(--surface-dark));
-  --surface-2: light-dark(var(--surface-2-light), var(--surface-2-dark));
-  --border: light-dark(var(--border-light), var(--border-dark));
-  --text: light-dark(var(--text-light), var(--text-dark));
-  --muted: light-dark(var(--muted-light), var(--muted-dark));
-  --brand: light-dark(var(--brand-light), var(--brand-dark));
-  --ok: light-dark(var(--ok-light), var(--ok-dark));
-  --warn: light-dark(var(--warn-light), var(--warn-dark));
-  --danger: light-dark(var(--danger-light), var(--danger-dark));
-  --code-bg: light-dark(var(--code-bg-light), var(--code-bg-dark));
+  --surface-raised: light-dark(var(--surface-raised-light), var(--surface-raised-dark));
+  --surface-active: light-dark(var(--surface-active-light), var(--surface-active-dark));
+  --line-soft: light-dark(var(--line-soft-light), var(--line-soft-dark));
+  --line: light-dark(var(--line-light), var(--line-dark));
+  --line-strong: light-dark(var(--line-strong-light), var(--line-strong-dark));
 
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Sukhumvit Set", "Kanit", sans-serif;
+  --text: light-dark(var(--text-light), var(--text-dark));
+  --text-secondary: light-dark(var(--text-secondary-light), var(--text-secondary-dark));
+  --muted: light-dark(var(--muted-light), var(--muted-dark));
+  --faint: light-dark(var(--faint-light), var(--faint-dark));
+
+  --action: light-dark(var(--action-light), var(--action-dark));
+  --action-hover: light-dark(var(--action-hover-light), var(--action-hover-dark));
+  --action-text: light-dark(var(--action-text-light), var(--action-text-dark));
+
+  --ok: light-dark(var(--ok-light), var(--ok-dark));
+  --ok-bg: light-dark(var(--ok-bg-light), var(--ok-bg-dark));
+  --ok-line: light-dark(var(--ok-line-light), var(--ok-line-dark));
+
+  --warn: light-dark(var(--warn-light), var(--warn-dark));
+  --warn-bg: light-dark(var(--warn-bg-light), var(--warn-bg-dark));
+  --warn-line: light-dark(var(--warn-line-light), var(--warn-line-dark));
+
+  --danger: light-dark(var(--danger-light), var(--danger-dark));
+  --danger-bg: light-dark(var(--danger-bg-light), var(--danger-bg-dark));
+  --danger-line: light-dark(var(--danger-line-light), var(--danger-line-dark));
+
+  --code-bg: light-dark(var(--code-bg-light), var(--code-bg-dark));
+  --code-head: light-dark(var(--code-head-light), var(--code-head-dark));
+  --code-text: light-dark(var(--code-text-light), var(--code-text-dark));
+  --code-inline: light-dark(var(--code-inline-light), var(--code-inline-dark));
+
+  --scrollbar-thumb: light-dark(var(--scrollbar-thumb-light), var(--scrollbar-thumb-dark));
+  --scrollbar-track: transparent;
+
+  /* Spacing & radii (4pt scale) */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Typography — generous Thai-safe line-heights */
+  --font-sans: "Inter", "IBM Plex Sans Thai", "Noto Sans Thai", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  scrollbar-color: light-dark(#94a3b8, #475569) transparent;
-  accent-color: var(--brand);
-}
+  --elev-composer: 0 8px 28px rgb(0 0 0 / 0.24);
+  --elev-modal: 0 24px 64px rgb(0 0 0 / 0.52);
 
-[data-theme="light"] {
-  color-scheme: light;
-  --bg: var(--bg-light);
-  --surface: var(--surface-light);
-  --surface-2: var(--surface-2-light);
-  --border: var(--border-light);
-  --text: var(--text-light);
-  --muted: var(--muted-light);
-  --brand: var(--brand-light);
-  --ok: var(--ok-light);
-  --warn: var(--warn-light);
-  --danger: var(--danger-light);
-  --code-bg: var(--code-bg-light);
+  accent-color: var(--action);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: var(--bg-dark);
+  --canvas: var(--canvas-dark);
+  --rail: var(--rail-dark);
   --surface: var(--surface-dark);
-  --surface-2: var(--surface-2-dark);
-  --border: var(--border-dark);
+  --surface-raised: var(--surface-raised-dark);
+  --surface-active: var(--surface-active-dark);
+  --line-soft: var(--line-soft-dark);
+  --line: var(--line-dark);
+  --line-strong: var(--line-strong-dark);
   --text: var(--text-dark);
+  --text-secondary: var(--text-secondary-dark);
   --muted: var(--muted-dark);
-  --brand: var(--brand-dark);
+  --faint: var(--faint-dark);
+  --action: var(--action-dark);
+  --action-hover: var(--action-hover-dark);
+  --action-text: var(--action-text-dark);
   --ok: var(--ok-dark);
+  --ok-bg: var(--ok-bg-dark);
+  --ok-line: var(--ok-line-dark);
   --warn: var(--warn-dark);
+  --warn-bg: var(--warn-bg-dark);
+  --warn-line: var(--warn-line-dark);
   --danger: var(--danger-dark);
+  --danger-bg: var(--danger-bg-dark);
+  --danger-line: var(--danger-line-dark);
   --code-bg: var(--code-bg-dark);
+  --code-head: var(--code-head-dark);
+  --code-text: var(--code-text-dark);
+  --code-inline: var(--code-inline-dark);
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
 }
 
-* {
+[data-theme="light"] {
+  color-scheme: light;
+  --canvas: var(--canvas-light);
+  --rail: var(--rail-light);
+  --surface: var(--surface-light);
+  --surface-raised: var(--surface-raised-light);
+  --surface-active: var(--surface-active-light);
+  --line-soft: var(--line-soft-light);
+  --line: var(--line-light);
+  --line-strong: var(--line-strong-light);
+  --text: var(--text-light);
+  --text-secondary: var(--text-secondary-light);
+  --muted: var(--muted-light);
+  --faint: var(--faint-light);
+  --action: var(--action-light);
+  --action-hover: var(--action-hover-light);
+  --action-text: var(--action-text-light);
+  --ok: var(--ok-light);
+  --ok-bg: var(--ok-bg-light);
+  --ok-line: var(--ok-line-light);
+  --warn: var(--warn-light);
+  --warn-bg: var(--warn-bg-light);
+  --warn-line: var(--warn-line-light);
+  --danger: var(--danger-light);
+  --danger-bg: var(--danger-bg-light);
+  --danger-line: var(--danger-line-light);
+  --code-bg: var(--code-bg-light);
+  --code-head: var(--code-head-light);
+  --code-text: var(--code-text-light);
+  --code-inline: var(--code-inline-light);
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --elev-composer: 0 8px 24px rgb(0 0 0 / 0.06);
+  --elev-modal: 0 24px 56px rgb(0 0 0 / 0.16);
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
-  background: var(--bg);
+  background: var(--canvas);
   color: var(--text);
   font-family: var(--font-sans);
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
   height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Accessible focus ring (WCAG 1.4.11 >= 3:1 contrast) */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Standard scrollbars + WebKit fallback inside @supports not */
+.scroller {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+@supports not (scrollbar-color: auto) {
+  .scroller {
+    scrollbar-width: auto;
+  }
+  .scroller::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroller::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+  .scroller::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
