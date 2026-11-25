@@ -14,6 +14,26 @@ pub struct ModelInfo {
     pub managed: bool,
 }
 
+/// Detects split-GGUF shard suffix `*-NNNNN-of-MMMMM.gguf` returning `(prefix, shard_no_1based, split_count)`.
+fn parse_split_gguf_suffix(file_name: &str) -> Option<(&str, usize, usize)> {
+    let stem = file_name.strip_suffix(".gguf")?;
+    if stem.len() < 15 {
+        return None;
+    }
+    let split_pos = stem.len() - 15;
+    let suffix = &stem[split_pos..];
+    if !suffix.starts_with('-') || &suffix[6..10] != "-of-" {
+        return None;
+    }
+    let shard_no: usize = suffix[1..6].parse().ok()?;
+    let split_count: usize = suffix[10..15].parse().ok()?;
+    if split_count > 1 && shard_no >= 1 && shard_no <= split_count {
+        Some((&stem[..split_pos], shard_no, split_count))
+    } else {
+        None
+    }
+}
+
 fn scan_dir_recursive(
     dir: &Path,
     source: &str,
@@ -51,6 +71,19 @@ fn scan_dir_recursive(
         if lower.starts_with("mmproj-") || lower.starts_with("ggml-vocab-") {
             continue;
         }
+        // For multi-shard split GGUFs, only list shard 1 and sum all sibling shard sizes.
+        let mut total_size = meta.len();
+        if let Some((prefix, shard_no, split_count)) = parse_split_gguf_suffix(file_name) {
+            if shard_no > 1 {
+                continue;
+            }
+            for idx in 2..=split_count {
+                let sibling = path.with_file_name(format!("{prefix}-{idx:05}-of-{split_count:05}.gguf"));
+                if let Ok(sm) = fs::metadata(&sibling) {
+                    total_size += sm.len();
+                }
+            }
+        }
         let canonical = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
         if !seen.insert(canonical) {
             continue;
@@ -58,7 +91,7 @@ fn scan_dir_recursive(
         out.push(ModelInfo {
             name: file_name.to_string(),
             path: path.to_string_lossy().into_owned(),
-            size_bytes: meta.len(),
+            size_bytes: total_size,
             source: source.to_string(),
             managed,
         });
